@@ -5,8 +5,8 @@
 #
 # Copyright (c) 2012 ITerativ GmbH. All rights reserved.
 #
-# Created on Jul 02, 2012
-# @author: DanEEStar <daniel.egger@gmail.com>
+# Created on Jul 10, 2013
+# @author: maersu <me@maersu.ch>
 
 from distutils.core import setup
 import os
@@ -52,7 +52,7 @@ setup(
     description="Generate random world objects (names of persons, streets & cities)",
     author='Marcel Eyer',
     author_email='me@maersu.ch',
-    url='iterativ.ch',
+    url='http://www.iterativ.ch',
     packages=packages,
     data_files=data_files,
     zip_safe=False
