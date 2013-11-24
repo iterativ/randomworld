@@ -18,7 +18,7 @@ from djangojames.db.utils import reset_schema
 from randomworld.defaults import UserFactory, DUMMY_PASSWORD
 
 
-class LoadDummyData(NoArgsCommand):
+class LoadRandomData(NoArgsCommand):
     ignore_reset_default = False
     dummy_factories = [(UserFactory, 30)]
 
