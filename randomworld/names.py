@@ -18,6 +18,7 @@ class UTF8Recoder:
     """
     Iterator that reads an encoded stream and reencodes the input to UTF-8
     """
+
     def __init__(self, f, encoding):
         self.reader = codecs.getreader(encoding)(f)
 
@@ -26,6 +27,7 @@ class UTF8Recoder:
 
     def next(self):
         return self.reader.next().encode("utf-8")
+
 
 class UnicodeReader:
     """
@@ -44,10 +46,10 @@ class UnicodeReader:
     def __iter__(self):
         return self
 
-class NameFactory():
 
+class NameFactory():
     names = {}
-    _chosen = {'full_name':[], 'string':[], 'plz':[], 'tel':[]}
+    _chosen = {'full_name': [], 'string': [], 'plz': [], 'tel': []}
 
     def __init__(self):
         self._load_file('first_name')
@@ -58,7 +60,8 @@ class NameFactory():
 
     def _load_file(self, group):
         import __init__
-        file =  os.path.join(os.path.dirname(__init__.__file__), 'data', '%s.csv' % group)
+
+        file = os.path.join(os.path.dirname(__init__.__file__), 'data', '%s.csv' % group)
 
         names_list = []
 
@@ -92,7 +95,7 @@ class NameFactory():
         return random.randint(1000, 3000)
 
     def get_random_tel(self, unique=False):
-        return '+41 %s'  % random.randint(100000000, 999999999)
+        return '+41 %s' % random.randint(100000000, 999999999)
 
     def get_full_name(self, unique=False):
         if unique:
@@ -141,6 +144,4 @@ class NameFactory():
         return name
 
 
-
-
-
+name_factory = NameFactory()
