@@ -12,6 +12,29 @@ import csv, codecs
 import os
 import random
 import string
+import glob
+
+LOREM_IPSUM = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
+LOREM_IPSUM_LIST = LOREM_IPSUM.split(' ')
+
+BASE_WISH = [u'Ich möchte lernen wie man am besten %(verb)s kann',
+             u'Wie kann ich sofort %(verb)s?',
+             u'Wie %(verb)s wir richtig?',
+             u'Grundkurs: %(verb)s',
+             u'Wie mache ich %(noun)s selber',
+             u'Anfängerkurs: %(noun)s',
+             u'Ich möchte wissen wie man am besten %(noun)s %(verb)s kann',
+             u'Crashkurs: %(noun)s %(verb)s',
+             u'Intensivkurs in %(noun)skunde',
+             u'Wie kan man zu hause am einfachsten %(verb)s?',
+             u'Eine %(noun)s %(verb)s, ohne zu %(verb2)s',
+             u'Wie man %(noun)s am einfachsten und besten %(verb)s kann',
+             u'Tipps und Tricks fürs %(noun)s',
+             u'Das Optimum aus meinem %(noun)s rausholen',
+             u'Wie man %(noun)s genau %(verb)s muss',
+             u'Vorgehen beim %(verb)s',
+             u'%(verb)s für Dummies'
+]
 
 
 class UTF8Recoder:
@@ -47,22 +70,30 @@ class UnicodeReader:
         return self
 
 
+def make_method(cls, name):
+    def _get_generic_name(self, unique=False):
+        return self._get_name(name, unique)
+
+    fn_name = 'get_%s' % name
+    if not hasattr(cls, fn_name):
+        setattr(cls, fn_name, _get_generic_name)
+
+
 class NameFactory():
     names = {}
-    _chosen = {'full_name': [], 'string': [], 'plz': [], 'tel': []}
+    _chosen = {'full_name': [],
+               'string': [],
+               'plz': [],
+               'tel': [],
+               'words': []}
 
     def __init__(self):
-        self._load_file('first_name')
-        self._load_file('last_name')
-        self._load_file('city')
-        self._load_file('district')
-        self._load_file('street')
+        for csv_file in glob.glob(os.path.join(os.path.dirname(__file__), "data/*.csv")):
+            group = os.path.splitext(os.path.basename(csv_file))[0]
+            self._load_file(group, csv_file)
+            make_method(NameFactory, group)
 
-    def _load_file(self, group):
-        import __init__
-
-        file = os.path.join(os.path.dirname(__init__.__file__), 'data', '%s.csv' % group)
-
+    def _load_file(self, group, file):
         names_list = []
 
         with open(file, 'rb') as f:
@@ -91,6 +122,18 @@ class NameFactory():
         self._chosen['string'].append(name)
         return name
 
+    def get_words(self, unique=False, size=30, words=LOREM_IPSUM_LIST):
+        if unique:
+            while True:
+                name = ' '.join([random.choice(words) for i in range(1, size)])
+                if name not in self._chosen['words']:
+                    break
+        else:
+            name = ' '.join([random.choice(words) for i in range(1, size)])
+
+        self._chosen['words'].append(name)
+        return name[0].upper() + name[1:]
+
     def get_random_plz(self, unique=False):
         return random.randint(1000, 3000)
 
@@ -114,20 +157,22 @@ class NameFactory():
         self._chosen['full_name'].append(names)
         return names
 
-    def get_first_name(self, unique=False):
-        return self._get_name('first_name', unique)
+    def get_wish(self, unique=False):
+        group = 'wish'
+        if unique:
+            available = filter(lambda x: x not in self._chosen[group], self.names[group])
+            if len(available):
+                name = random.choice(available)
+            else:
+                name = random.choice(BASE_WISH) % {'verb': self.get_verb(),
+                                                   'verb2': self.get_verb(),
+                                                   'noun': self.get_noun()}
 
-    def get_last_name(self, unique=False):
-        return self._get_name('last_name', unique)
+        else:
+            name = random.choice(self.names[group])
 
-    def get_city(self, unique=False):
-        return self._get_name('city', unique)
-
-    def get_district(self, unique=False):
-        return self._get_name('district', unique)
-
-    def get_street(self, unique=False):
-        return self._get_name('street', unique)
+        self._chosen[group].append(name)
+        return name
 
     def _get_name(self, group, unique=False):
         if unique:
