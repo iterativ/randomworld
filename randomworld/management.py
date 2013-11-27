@@ -16,6 +16,8 @@ from django.core.management import load_command_class
 from django.core.management.base import NoArgsCommand
 from djangojames.db.utils import reset_schema
 from randomworld.defaults import UserFactory, DUMMY_PASSWORD
+from randomworld.names import name_factory
+
 
 class LoadRandomData(NoArgsCommand):
     ignore_reset_default = False
@@ -71,7 +73,9 @@ class LoadRandomData(NoArgsCommand):
         self.log("load Random Dummy data ...")
 
         try:
-            get_user_model().objects.create_superuser('admin', 'admin@admin.dummy', DUMMY_PASSWORD)
+            user = get_user_model().objects.create_superuser('admin', 'admin@admin.dummy', DUMMY_PASSWORD)
+            user.first_name, user.last_name = name_factory.get_full_name()
+            user.save()
             self.log("superuser: admin")
         except Exception, e:
             self.log("WARNING: could not create superuser: %s" % str(e))

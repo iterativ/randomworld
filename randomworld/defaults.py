@@ -9,8 +9,10 @@
 # @author: maersu <me@maersu.ch>
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
+from django.utils.encoding import force_unicode
 import factory
 from randomworld.names import name_factory
+from django.contrib.auth.models import Group
 
 
 class DefaultFactoryMixin(object):
@@ -20,11 +22,14 @@ class DefaultFactoryMixin(object):
 
     @classmethod
     def _prepare(cls, create, **kwargs):
+        cls.kwargs = kwargs
         args = cls.get_defaults()
+
         for key, value in args.items():
             kwargs[key] = kwargs.get(key, value)
 
         return super(DefaultFactoryMixin, cls)._prepare(create, **kwargs)
+
 
 UserKlass = get_user_model()
 _user = UserKlass()
@@ -32,12 +37,17 @@ DUMMY_PASSWORD = 'test'
 _user.set_password(DUMMY_PASSWORD)
 DUMMY_PASSWORD_HASH = _user.password
 
+
 class UserFactory(DefaultFactoryMixin, factory.Factory):
     FACTORY_FOR = UserKlass
 
     @classmethod
     def get_defaults(cls):
         first_name, last_name = name_factory.get_full_name(unique=True)
+        # do not overwrite kwargs
+        first_name = force_unicode(cls.kwargs.get('first_name', first_name))
+        last_name = force_unicode(cls.kwargs.get('last_name', last_name))
+
         username = slugify(u'{0}-{1}'.format(first_name, last_name).lower())
         email = '%s@%s.dy' % (username, slugify(last_name))
 
@@ -48,3 +58,9 @@ class UserFactory(DefaultFactoryMixin, factory.Factory):
             'username': username,
             'email': email
         }
+
+
+class StaffFactory(UserFactory):
+    is_staff = True
+    is_superuser = True
+
