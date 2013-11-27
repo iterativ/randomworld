@@ -7,12 +7,17 @@
 #
 # Created on Nov 24, 2013
 # @author: maersu <me@maersu.ch>
+
+import random
 from django.contrib.auth import get_user_model
 from django.utils.text import slugify
 from django.utils.encoding import force_unicode
 import factory
 from randomworld.names import name_factory
 from django.contrib.auth.models import Group
+from django.contrib.flatpages.models import FlatPage
+from django.contrib.sites.models import Site
+from django.utils.text import slugify
 
 
 class DefaultFactoryMixin(object):
@@ -64,3 +69,17 @@ class StaffFactory(UserFactory):
     is_staff = True
     is_superuser = True
 
+
+class FlatPageFactory(factory.Factory):
+    FACTORY_FOR = FlatPage
+    title = factory.LazyAttribute(lambda o: name_factory.get_words(size=random.randint(1, 3), unique=True))
+    content = factory.LazyAttribute(lambda o: name_factory.get_html(count=random.randint(10, 50)))
+    url = factory.LazyAttribute(lambda o: '/%s/' % slugify(unicode(o.title)))
+    registration_required = factory.LazyAttribute(lambda o: bool(random.getrandbits(1)))
+
+    @classmethod
+    def _prepare(cls, create, **kwargs):
+        page = super(FlatPageFactory, cls)._prepare(create, **kwargs)
+        page.save()
+        page.sites.add(Site.objects.get_current())
+        return page

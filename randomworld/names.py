@@ -113,11 +113,11 @@ class NameFactory():
     def get_string(self, unique=False, size=6, chars=string.ascii_lowercase):
         if unique:
             while True:
-                name = ''.join(random.choice(chars) for x in range(size))
+                name = ''.join(random.choice(chars) for x in range(size+1))
                 if name not in self._chosen['string']:
                     break
         else:
-            name = ''.join(random.choice(chars) for x in range(size))
+            name = ''.join(random.choice(chars) for x in range(size+1))
 
         self._chosen['string'].append(name)
         return name
@@ -125,14 +125,37 @@ class NameFactory():
     def get_words(self, unique=False, size=30, words=LOREM_IPSUM_LIST):
         if unique:
             while True:
-                name = ' '.join([random.choice(words) for i in range(1, size)])
+                name = ' '.join([random.choice(words) for i in range(1, size+1)])
                 if name not in self._chosen['words']:
                     break
         else:
-            name = ' '.join([random.choice(words) for i in range(1, size)])
+            name = ' '.join([random.choice(words) for i in range(1, size+1)])
 
         self._chosen['words'].append(name)
         return name[0].upper() + name[1:]
+
+    def get_html(self, unique=False, count=30, words=LOREM_IPSUM_LIST):
+
+        HTML_ENTITIES = [('<b>%s</b>', (5, 10)),
+                         ('<p>%s</p>', (30, 100)),
+                         ('<p>%s</p>', (30, 100)),
+                         ('<i>%s</i>', (5, 10)),
+                         ('<ul>%s</ul>', '<li>%s</li>', (5, 10))]
+
+        html = ''
+        for c in range(1, count):
+            h = random.choice(HTML_ENTITIES)
+            if len(h) == 2:
+                tmplate, ranges = h
+                html += ' ' + tmplate % ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])])
+            else:
+                tmplate_base, tmplate, ranges = h
+                sub_html = ''
+                for i in range(ranges[0], ranges[1]):
+                    sub_html += ' ' + tmplate % ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])])
+                html += ' ' + tmplate_base % sub_html
+
+        return html
 
     def get_random_plz(self, unique=False):
         return random.randint(1000, 3000)
