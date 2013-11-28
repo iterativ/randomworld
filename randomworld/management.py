@@ -33,6 +33,12 @@ class LoadRandomData(NoArgsCommand):
     def log(self, message):
         sys.stdout.write("%s\n" % message)
 
+    def create_objects(self):
+        for klass, count in self.dummy_factories:
+            self.log("create %s %s ..." % (count, klass.FACTORY_FOR.__name__))
+            for i in range(count):
+                klass().save()
+
     def handle_noargs(self, **options):
         from django.conf import settings
         from django.db import models
@@ -80,9 +86,6 @@ class LoadRandomData(NoArgsCommand):
         except Exception, e:
             self.log("WARNING: could not create superuser: %s" % str(e))
 
-        for klass, count in self.dummy_factories:
-            self.log("create %s %s ..." % (count, klass.FACTORY_FOR.__name__))
-            for i in range(count):
-                klass().save()
+        self.create_objects()
 
         self.log("dummy passwords: %s" % DUMMY_PASSWORD)
