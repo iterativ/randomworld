@@ -9,6 +9,7 @@
 # @author: maersu <me@maersu.ch>
 
 import csv, codecs
+import datetime
 import os
 import random
 import string
@@ -109,6 +110,16 @@ class NameFactory():
 
         self.names[group] = list(set(names_list))
         self._chosen[group] = []
+
+    def get_random_datetime(self, start=None, end=None):
+
+        if start is None:
+            start =(end or datetime.datetime.now()) + datetime.timedelta(weeks=-102)
+
+        if end is None:
+            end = datetime.datetime.now()
+
+        return start + datetime.timedelta(seconds=random.randint(0, int((end - start).total_seconds())))
 
     def get_string(self, unique=False, size=6, chars=string.ascii_lowercase):
         if unique:
