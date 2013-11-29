@@ -151,6 +151,8 @@ class NameFactory():
                          ('<p>%s</p>', (30, 100)),
                          ('<p>%s</p>', (30, 100)),
                          ('<i>%s</i>', (5, 10)),
+                         ('<h2>%s</h2>', (2, 4)),
+                         ('<a href="http://notfound.org/" target="_blank">%s</a>', (1, 5)),
                          ('<ul>%s</ul>', '<li>%s</li>', (5, 10))]
 
         html = ''
@@ -158,12 +160,12 @@ class NameFactory():
             h = random.choice(HTML_ENTITIES)
             if len(h) == 2:
                 tmplate, ranges = h
-                html += ' ' + tmplate % ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])])
+                html += ' ' + tmplate % (' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
             else:
                 tmplate_base, tmplate, ranges = h
                 sub_html = ''
                 for i in range(ranges[0], ranges[1]):
-                    sub_html += ' ' + tmplate % ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])])
+                    sub_html += ' ' + tmplate % (' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
                 html += ' ' + tmplate_base % sub_html
 
         return html
