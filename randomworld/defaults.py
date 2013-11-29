@@ -72,7 +72,7 @@ class StaffFactory(UserFactory):
 
 class FlatPageFactory(factory.Factory):
     FACTORY_FOR = FlatPage
-    title = factory.LazyAttribute(lambda o: name_factory.get_words(size=random.randint(1, 3), unique=True))
+    title = factory.LazyAttribute(lambda o: name_factory.get_noun(unique=True))
     content = factory.LazyAttribute(lambda o: name_factory.get_html(count=random.randint(10, 50)))
     url = factory.LazyAttribute(lambda o: '/%s/' % slugify(unicode(o.title)))
     registration_required = factory.LazyAttribute(lambda o: bool(random.getrandbits(1)))
