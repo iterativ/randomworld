@@ -174,7 +174,7 @@ class NameFactory():
         return random.randint(1000, 3000)
 
     def get_random_tel(self, unique=False):
-        return '+41 %s' % random.randint(100000000, 999999999)
+        return '+41 79%s' % random.randint(1000000, 9999999)
 
     def get_full_name(self, unique=False):
         if unique:
