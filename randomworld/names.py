@@ -114,7 +114,7 @@ class NameFactory():
     def get_random_datetime(self, start=None, end=None):
 
         if start is None:
-            start =(end or datetime.datetime.now()) + datetime.timedelta(weeks=-102)
+            start = (end or datetime.datetime.now()) + datetime.timedelta(weeks=-102)
 
         if end is None:
             end = datetime.datetime.now()
@@ -124,23 +124,23 @@ class NameFactory():
     def get_string(self, unique=False, size=6, chars=string.ascii_lowercase):
         if unique:
             while True:
-                name = ''.join(random.choice(chars) for x in range(size+1))
+                name = ''.join(random.choice(chars) for x in range(size + 1))
                 if name not in self._chosen['string']:
                     break
+            self._chosen['string'].append(name)
         else:
-            name = ''.join(random.choice(chars) for x in range(size+1))
+            name = ''.join(random.choice(chars) for x in range(size + 1))
 
-        self._chosen['string'].append(name)
         return name
 
     def get_words(self, unique=False, size=30, words=LOREM_IPSUM_LIST):
         if unique:
             while True:
-                name = ' '.join([random.choice(words) for i in range(1, size+1)])
+                name = ' '.join([random.choice(words) for i in range(1, size + 1)])
                 if name not in self._chosen['words']:
                     break
         else:
-            name = ' '.join([random.choice(words) for i in range(1, size+1)])
+            name = ' '.join([random.choice(words) for i in range(1, size + 1)])
 
         self._chosen['words'].append(name)
         return name[0].upper() + name[1:]
@@ -160,12 +160,14 @@ class NameFactory():
             h = random.choice(HTML_ENTITIES)
             if len(h) == 2:
                 tmplate, ranges = h
-                html += ' ' + tmplate % (' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
+                html += ' ' + tmplate % (
+                ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
             else:
                 tmplate_base, tmplate, ranges = h
                 sub_html = ''
                 for i in range(ranges[0], ranges[1]):
-                    sub_html += ' ' + tmplate % (' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
+                    sub_html += ' ' + tmplate % (
+                    ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
                 html += ' ' + tmplate_base % sub_html
 
         return html
@@ -174,7 +176,7 @@ class NameFactory():
         return random.randint(1000, 3000)
 
     def get_random_tel(self, unique=False):
-        return '+41 79%s' % random.randint(1000000, 9999999)
+        return '+4179%s' % random.randint(1000000, 9999999)
 
     def get_full_name(self, unique=False):
         if unique:
@@ -187,10 +189,10 @@ class NameFactory():
                 if i > 7:
                     names = (names[0], names[1] + ' ' + self.get_string(unique=unique, size=4).title())
                     break
+            self._chosen['full_name'].append(names)
         else:
             names = (self.get_first_name(unique), self.get_last_name(unique))
 
-        self._chosen['full_name'].append(names)
         return names
 
     def get_wish(self, unique=False):
@@ -204,10 +206,10 @@ class NameFactory():
                                                    'verb2': self.get_verb(),
                                                    'noun': self.get_noun()}
 
+            self._chosen[group].append(name)
         else:
             name = random.choice(self.names[group])
 
-        self._chosen[group].append(name)
         return name
 
     def _get_name(self, group, unique=False):
@@ -218,10 +220,10 @@ class NameFactory():
             else:
                 name = random.choice(self.names[group]) + ' ' + self.get_string(unique=unique, size=4).title()
 
+            self._chosen[group].append(name)
         else:
             name = random.choice(self.names[group])
 
-        self._chosen[group].append(name)
         return name
 
 

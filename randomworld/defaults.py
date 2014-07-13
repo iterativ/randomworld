@@ -41,6 +41,7 @@ _user = UserKlass()
 DUMMY_PASSWORD = 'test'
 _user.set_password(DUMMY_PASSWORD)
 DUMMY_PASSWORD_HASH = _user.password
+USER_NAME_MAX = 30
 
 
 class UserFactory(DefaultFactoryMixin, factory.Factory):
@@ -54,14 +55,16 @@ class UserFactory(DefaultFactoryMixin, factory.Factory):
         last_name = force_unicode(cls.kwargs.get('last_name', last_name))
 
         username = slugify(u'{0}-{1}'.format(first_name, last_name).lower())
-        email = '%s@%s.dy' % (username, slugify(last_name))
+        # check max length
+        if len(username) > USER_NAME_MAX:
+            username = '%s%s' % (username[:(USER_NAME_MAX - 1)], random.randint(1, 9))
 
         return {
             'first_name': first_name,
             'last_name': last_name,
             'password': DUMMY_PASSWORD_HASH,
             'username': username,
-            'email': email
+            'email': '%s@%s.dy' % (username, slugify(last_name))
         }
 
 
