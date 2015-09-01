@@ -42,7 +42,6 @@ class LoadRandomData(NoArgsCommand):
     def handle_noargs(self, **options):
         from django.conf import settings
         from django.db import models
-        from django.core.management.sql import emit_post_sync_signal
         from django.db.utils import DEFAULT_DB_ALIAS
         from django.core.management import call_command
 
@@ -55,26 +54,7 @@ class LoadRandomData(NoArgsCommand):
 
         if not ignore_reset:
             reset_schema(database_config)
-
-            # hack to avoid using south
-            klass = load_command_class('django.core', 'syncdb')
-            args = {}
-            defaults = {}
-            options['interactive'] = False
-            for opt in klass.option_list:
-                if opt.default is NO_DEFAULT:
-                    defaults[opt.dest] = None
-                else:
-                    defaults[opt.dest] = opt.default
-            defaults.update(options)
-            klass.execute(*args, **defaults)
-
-            # Emit the post sync signal. This allows individual
-            # applications to respond as if the database had been
-            # sync'd from scratch.
-            emit_post_sync_signal(models.get_models(), 0, 0, db)
-
-            call_command('migrate', fake=True)
+            call_command('migrate', fake_initial=True)
 
         self.log("load Random Dummy data ...")
 
@@ -89,3 +69,4 @@ class LoadRandomData(NoArgsCommand):
         self.create_objects()
 
         self.log("dummy passwords: %s" % DUMMY_PASSWORD)
+
