@@ -10,11 +10,12 @@
 
 # -*- coding: utf-8 -*-
 import sys
-from optparse import make_option, NO_DEFAULT
 from django.contrib.auth import get_user_model
 from django.core.management import load_command_class
 from django.core.management.base import NoArgsCommand
 from djangojames.db.utils import reset_schema
+from optparse import make_option, NO_DEFAULT
+
 from randomworld.defaults import UserFactory, DUMMY_PASSWORD
 from randomworld.names import name_factory
 
@@ -35,7 +36,7 @@ class LoadRandomData(NoArgsCommand):
 
     def create_objects(self):
         for klass, count in self.dummy_factories:
-            self.log("create %s %s ..." % (count, klass.FACTORY_FOR.__name__))
+            #self.log("create %s %s ..." % (count, klass.FACTORY_FOR.__name__))
             for i in range(count):
                 klass().save()
 
