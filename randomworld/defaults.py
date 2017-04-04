@@ -8,15 +8,14 @@
 # Created on Nov 24, 2013
 # @author: maersu <me@maersu.ch>
 
+import factory
 import random
 from django.contrib.auth import get_user_model
-from django.utils.text import slugify
-from django.utils.encoding import force_unicode
-import factory
-from randomworld.names import name_factory
-from django.contrib.auth.models import Group
 from django.contrib.sites.models import Site
+from django.utils.encoding import force_unicode
 from django.utils.text import slugify
+
+from randomworld.names import name_factory
 
 
 class DefaultFactoryMixin(object):
@@ -44,7 +43,8 @@ USER_NAME_MAX = 30
 
 
 class UserFactory(DefaultFactoryMixin, factory.Factory):
-    FACTORY_FOR = UserKlass
+    class Meta:
+        model = UserKlass
 
     @classmethod
     def get_defaults(cls):
@@ -70,3 +70,4 @@ class UserFactory(DefaultFactoryMixin, factory.Factory):
 class StaffFactory(UserFactory):
     is_staff = True
     is_superuser = True
+

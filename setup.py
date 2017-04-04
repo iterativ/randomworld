@@ -8,9 +8,9 @@
 # Created on Jul 10, 2013
 # @author: maersu <me@maersu.ch>
 
-from distutils.core import setup
 import os
 from distutils.command.install import INSTALL_SCHEMES
+from distutils.core import setup
 
 packages = []
 data_files = []
@@ -48,10 +48,10 @@ for scheme in INSTALL_SCHEMES.values():
 
 setup(
     name='randomworld',
-    version='0.1',
+    version='0.2',
     description="Generate random world objects (names of persons, streets & cities)",
-    author='Marcel Eyer',
-    author_email='me@maersu.ch',
+    author='Daniel Egger',
+    author_email='daniel.egger@iterativ.ch',
     url='http://www.iterativ.ch',
     packages=packages,
     data_files=data_files,
