@@ -48,7 +48,7 @@ for scheme in INSTALL_SCHEMES.values():
 
 setup(
     name='randomworld',
-    version='0.2',
+    version='1.8',
     description="Generate random world objects (names of persons, streets & cities)",
     author='Daniel Egger',
     author_email='daniel.egger@iterativ.ch',
