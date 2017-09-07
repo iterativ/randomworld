@@ -11,7 +11,6 @@ from __future__ import unicode_literals
 import factory
 import random
 from django.contrib.auth import get_user_model
-from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
 from django.utils.encoding import force_text
 from django.utils.text import slugify
@@ -72,18 +71,3 @@ class StaffFactory(UserFactory):
     is_staff = True
     is_superuser = True
 
-
-class FlatPageFactory(factory.Factory):
-    class Meta:
-        model = FlatPage
-    title = factory.LazyAttribute(lambda o: name_factory.get_noun(unique=True))
-    content = factory.LazyAttribute(lambda o: name_factory.get_html(count=random.randint(10, 50)))
-    url = factory.LazyAttribute(lambda o: '/%s/' % slugify(unicode(o.title)))
-    registration_required = factory.LazyAttribute(lambda o: bool(random.getrandbits(1)))
-
-    @classmethod
-    def _prepare(cls, create, **kwargs):
-        page = super(FlatPageFactory, cls)._prepare(create, **kwargs)
-        page.save()
-        page.sites.add(Site.objects.get_current())
-        return page
