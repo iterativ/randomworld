@@ -7,13 +7,13 @@
 #
 # Created on Nov 24, 2013
 # @author: maersu <me@maersu.ch>
-
+from __future__ import unicode_literals
 import factory
 import random
 from django.contrib.auth import get_user_model
 from django.contrib.flatpages.models import FlatPage
 from django.contrib.sites.models import Site
-from django.utils.encoding import force_unicode
+from django.utils.encoding import force_text
 from django.utils.text import slugify
 
 from randomworld.names import name_factory
@@ -51,8 +51,8 @@ class UserFactory(DefaultFactoryMixin, factory.Factory):
     def get_defaults(cls):
         first_name, last_name = name_factory.get_full_name(unique=True)
         # do not overwrite kwargs
-        first_name = force_unicode(cls.kwargs.get('first_name', first_name))
-        last_name = force_unicode(cls.kwargs.get('last_name', last_name))
+        first_name = force_text(cls.kwargs.get('first_name', first_name))
+        last_name = force_text(cls.kwargs.get('last_name', last_name))
 
         username = slugify(u'{0}-{1}'.format(first_name, last_name).lower())
         # check max length

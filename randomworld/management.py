@@ -9,6 +9,7 @@
 # @author: maersu <me@maersu.ch>
 
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 import sys
 from django.contrib.auth import get_user_model
 from django.core.management import load_command_class
@@ -84,7 +85,7 @@ class LoadRandomData(NoArgsCommand):
             user.first_name, user.last_name = name_factory.get_full_name()
             user.save()
             self.log("superuser: admin")
-        except Exception, e:
+        except Exception as e:
             self.log("WARNING: could not create superuser: %s" % str(e))
 
         self.create_objects()

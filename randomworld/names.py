@@ -7,13 +7,15 @@
 #
 # Created on Jul 10, 2013
 # @author: maersu <me@maersu.ch>
-
-import csv, codecs
+from __future__ import unicode_literals
+import codecs
 import datetime
+import io
 import os
 import random
 import string
 import glob
+from backports import csv
 
 LOREM_IPSUM = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
 LOREM_IPSUM_LIST = LOREM_IPSUM.split(' ')
@@ -35,40 +37,7 @@ BASE_WISH = [u'Ich möchte lernen wie man am besten %(verb)s kann',
              u'Wie man %(noun)s genau %(verb)s muss',
              u'Vorgehen beim %(verb)s',
              u'%(verb)s für Dummies'
-]
-
-
-class UTF8Recoder:
-    """
-    Iterator that reads an encoded stream and reencodes the input to UTF-8
-    """
-
-    def __init__(self, f, encoding):
-        self.reader = codecs.getreader(encoding)(f)
-
-    def __iter__(self):
-        return self
-
-    def next(self):
-        return self.reader.next().encode("utf-8")
-
-
-class UnicodeReader:
-    """
-    A CSV reader which will iterate over lines in the CSV file "f",
-    which is encoded in the given encoding.
-    """
-
-    def __init__(self, f, dialect=csv.excel, encoding="utf-8", **kwds):
-        f = UTF8Recoder(f, encoding)
-        self.reader = csv.reader(f, dialect=dialect, **kwds)
-
-    def next(self):
-        row = self.reader.next()
-        return [unicode(s, "utf-8") for s in row]
-
-    def __iter__(self):
-        return self
+             ]
 
 
 def make_method(cls, name):
@@ -97,8 +66,8 @@ class NameFactory():
     def _load_file(self, group, file):
         names_list = []
 
-        with open(file, 'rb') as f:
-            reader = UnicodeReader(f)
+        with io.open(file, 'r') as f:
+            reader = csv.reader(f, dialect=csv.excel)
             for row in reader:
                 if len(row) == 1:
                     row = row[0].strip()
@@ -161,13 +130,13 @@ class NameFactory():
             if len(h) == 2:
                 tmplate, ranges = h
                 html += ' ' + tmplate % (
-                ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
+                    ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
             else:
                 tmplate_base, tmplate, ranges = h
                 sub_html = ''
                 for i in range(ranges[0], ranges[1]):
                     sub_html += ' ' + tmplate % (
-                    ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
+                        ' '.join([random.choice(words) for i in range(ranges[0], ranges[1])]).capitalize())
                 html += ' ' + tmplate_base % sub_html
 
         return html

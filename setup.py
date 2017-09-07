@@ -55,5 +55,8 @@ setup(
     url='http://www.iterativ.ch',
     packages=packages,
     data_files=data_files,
+    install_requires=[
+        'backports.csv',
+    ],
     zip_safe=False
 )
