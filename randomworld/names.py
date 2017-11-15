@@ -8,13 +8,13 @@
 # Created on Jul 10, 2013
 # @author: maersu <me@maersu.ch>
 from __future__ import unicode_literals
-import codecs
+
 import datetime
+import glob
 import io
 import os
 import random
 import string
-import glob
 from backports import csv
 
 LOREM_IPSUM = "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet."
@@ -66,7 +66,7 @@ class NameFactory():
     def _load_file(self, group, file):
         names_list = []
 
-        with io.open(file, 'r') as f:
+        with io.open(file, 'r', encoding='utf-8') as f:
             reader = csv.reader(f, dialect=csv.excel)
             for row in reader:
                 if len(row) == 1:
